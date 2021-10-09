@@ -22,7 +22,7 @@ export default async function Word(req, res) {
           res.status(200).send(freqNumber);
         }
       } catch (error) {
-        res.status(500).send(error);
+        res.status(500).send({ error: error.message });
       }
     });
 }
