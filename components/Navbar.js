@@ -14,7 +14,7 @@ const Navbar = () => {
   const { auth, signOut } = useContext(FirebaseContext);
 
   const { data: vocab, error } = useSWR(
-    `/api/vocabulary?uid=${user.uid}`,
+    `/api/vocabulary?uid=${user?.uid}`,
     fetcher
   );
 
