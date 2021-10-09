@@ -19,9 +19,11 @@ export default async function Word(req, res) {
         if (freqNumber === 0) {
           res.status(200).send({ msg: "Word not found" });
         } else {
-          res.status(200).send({ freq: freqNumber });
+          res.status(200).send(freqNumber);
         }
-      } catch (error) {}
+      } catch (error) {
+        res.status(500).send(error);
+      }
     });
 }
 

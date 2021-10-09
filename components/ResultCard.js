@@ -17,7 +17,8 @@ const ResultCard = ({ result }) => {
     const fetchFrequency = async () => {
       const res = await fetch(encodeURI(`/api/frequency/${result.slug}`));
 
-      const { freq } = await res.json();
+      const freq = await res.json();
+      console.log(freq);
       if (freq === undefined) {
         setFrequency(undefined);
         return;
