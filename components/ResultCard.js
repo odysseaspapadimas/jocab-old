@@ -18,7 +18,6 @@ const ResultCard = ({ result }) => {
       const res = await fetch(encodeURI(`/api/frequency/${result.slug}`));
 
       const freq = await res.json();
-      console.log(freq, "error message");
       if (freq === undefined) {
         setFrequency(undefined);
         return;
@@ -78,8 +77,8 @@ const ResultCard = ({ result }) => {
   };
 
   return (
-    <div className="mt-5 relative flex flex-col lg:flex-row w-full border rounded-lg border-gray-500 p-8">
-      <div className="w-64">
+    <div className="mt-5 relative flex flex-col lg:flex-row justify-between w-full border rounded-lg border-gray-500 p-8">
+      <div className="whitespace-nowrap">
         {/* <h1>{JSON.stringify(result)}</h1> */}
         <Word
           word={result.japanese[0].word}
@@ -94,10 +93,11 @@ const ResultCard = ({ result }) => {
       <div className="ml-4 max-w-md">
         <EnglishDefinitions senses={result.senses} />
       </div>
-      <div className="absolute top-8 right-8">
+      <div className="">
         {user && (
           <button
             onClick={handleAdd}
+            style={{ maxLines: 2 }}
             className={`p-2 text-sm ${
               isOnList || frequency === null
                 ? "border border-gray-500 bg-primary-hover hover:bg-gray-900"
