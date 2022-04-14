@@ -1,3 +1,4 @@
+import { extendTheme } from "@chakra-ui/react";
 import { useEffect, useState, useRef } from "react";
 import Navbar from "../components/Navbar";
 import Panel from "../components/Reader/Panel";
@@ -13,11 +14,13 @@ const reader = () => {
   const [inputProps, setInputProps] = useState({
     directory: "",
     webkitdirectory: "",
+    multiple: false,
   });
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     if (window.outerWidth < 1024) {
-      setInputProps({ multiple: true });
+      setInputProps({ directory: "", webkitdirectory: "", multiple: true });
     }
   }, []);
 
@@ -55,12 +58,23 @@ const reader = () => {
   };
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, left: 0 });
   };
 
   useEffect(() => {
     console.log(lastPanel, "lastPanel");
   }, [lastPanel.panel]);
+
+  const handlePageChange = (e) => {
+    setPage(e.target.value);
+    if (e.target.value > panels.length) {
+      setPage(panels.length);
+    }
+  };
+
+  const scrollToPanel = () => {
+    document.getElementById(`panel-${page - 1}`).scrollIntoView();
+  };
 
   return (
     <div>
@@ -77,6 +91,29 @@ const reader = () => {
             Open Folder
           </div>
         </label>
+
+        {panels.length > 0 && (
+          <div className="flex flex-col items-center space-y-2 mb-4">
+            <div>
+              <input
+                type="number"
+                className="bg-transparent px-2 w-11 text-center border border-gray-500"
+                value={page}
+                max={`${panels.length}`}
+                onChange={handlePageChange}
+                maxLength={panels.length.toString().length}
+              />{" "}
+              / {panels.length}
+            </div>
+            <button
+              onClick={scrollToPanel}
+              className="px-5 py-2 bg-white text-black font-semibold"
+            >
+              Go
+            </button>
+          </div>
+        )}
+
         <div className="flex flex-col items-center justify-center space-y-4">
           {panels &&
             panels.length > 0 &&

@@ -23,19 +23,14 @@ const Panel = ({
       if (index + 1 === panelsLength) {
         console.log(index + 1, panelsLength);
         setLastPanel((prev) => ({ manga: prev.manga, panel: 0 }));
-      } else {
+      } else if(index + 1 > lastPanel) {
         setLastPanel((prev) => ({ manga: prev.manga, panel: index }));
+        console.log(index, "index");
       }
     }
   }, [isVisible]);
   return (
-    <div className="relative">
-      <p
-        className="absolute bottom-0 left-0 right-0 mx-auto w-min p-1"
-        style={{ backgroundColor: "rgba(0, 0, 0, 0.4)" }}
-      >
-        {index + 1}/{panelsLength}
-      </p>
+    <div id={`panel-${index}`} className="relative">
       <img
         ref={imgRef}
         src={URL.createObjectURL(panel)}
@@ -43,6 +38,12 @@ const Panel = ({
         onLoad={() => setHasLoaded(true)}
         alt=""
       />
+      <p
+        className="absolute bottom-0 left-0 right-0 mx-auto w-min p-1"
+        style={{ backgroundColor: "rgba(0, 0, 0, 0.4)" }}
+      >
+        {index + 1}/{panelsLength}
+      </p>
     </div>
   );
 };

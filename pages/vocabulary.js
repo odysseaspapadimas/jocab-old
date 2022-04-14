@@ -6,17 +6,28 @@ import {
   Button,
   MenuItemOption,
   MenuOptionGroup,
-  MenuDivider,
 } from "@chakra-ui/react";
 import { useState, useContext, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import VocabCard from "../components/Vocabulary/VocabCard";
 import UserContext from "../context/user";
 import useProtectedRoute from "../hooks/useProtectedRoute";
+import useSWR from "swr";
+import fetcher from "../helpers/fetcher";
+
+const fetcherWithToken = (url, user) =>
+  fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: user.id,
+    },
+  }).then((res) => {
+    console.log(user.id, "token");
+    return res.json();
+  });
 
 const Vocabulary = () => {
   const { user } = useContext(UserContext);
-  const [vocabulary, setVocabulary] = useState({ vocab: [] });
 
   const [sort, setSort] = useState({
     type: "date",
@@ -24,31 +35,10 @@ const Vocabulary = () => {
     freqAsc: false,
   }); //sort by "date" or "frequency" and asc/desc for the different types
 
-  const toast = useToast();
-
-  const fetchVocab = async () => {
-    const res = await fetch("/api/vocabulary/", {
-      method: "GET",
-      headers: {
-        Authorization: user.uid,
-      },
-    });
-    const { vocab } = await res.json();
-    if (vocab === undefined) return;
-    setVocabulary(vocab[0]);
-    console.log(vocab[0]);
-  };
-
-  useEffect(() => {
-    if (!user) return;
-
-    fetchVocab();
-  }, [user]);
-  useEffect(() => {
-    if (!user) return;
-
-    console.log(vocabulary, vocabulary.vocab.length);
-  }, [vocabulary]);
+  const { data: vocabulary, error } = useSWR(
+    `/api/vocabulary?uid=${user.uid}`,
+    fetch
+  );
 
   const handleRemove = async (word) => {
     console.log("remove ", word);
@@ -66,14 +56,13 @@ const Vocabulary = () => {
 
     if (res.status === 200) {
       console.log("Successfull removal");
-      toast({
-        title: "Removed word",
-        description: "Succesfully removed word.",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-      fetchVocab();
+      // toast({
+      //   title: "Removed word",
+      //   description: "Succesfully removed word.",
+      //   status: "success",
+      //   duration: 3000,
+      //   isClosable: true,
+      // });
     }
   };
 
@@ -205,8 +194,10 @@ const Vocabulary = () => {
               ))}
           </div>
         </>
-      ) : (
+      ) : !error && vocabulary && vocabulary.vocab.length === 0 ? (
         <h1>You have no words. Go add some!</h1>
+      ) : (
+        <h1>Loading...</h1>
       )}
     </div>
   );

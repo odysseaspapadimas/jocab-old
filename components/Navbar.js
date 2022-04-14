@@ -18,6 +18,8 @@ const Navbar = () => {
     fetcher
   );
 
+  console.log(vocab, 'navocab')
+
   return (
     <nav className="my-5 flex w-full justify-between items-center">
       <div className="flex flex-col justify-center">
@@ -46,9 +48,7 @@ const Navbar = () => {
             <Link href="/vocabulary">
               <div className="relative px-4 py-2 bg-secondary border border-secondary hover:bg-secondary-hover cursor-pointer">
                 <p className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-green-600 w-6 h-6 rounded-full text-sm flex items-center justify-center">
-                  {vocab?.vocab[0] && !error
-                    ? vocab.vocab[0].vocab.length
-                    : "0"}
+                  {vocab && !error ? vocab.vocab.length : "0"}
                 </p>
                 <a className="  ">Vocabulary</a>
               </div>

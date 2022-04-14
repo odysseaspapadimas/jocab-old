@@ -9,8 +9,11 @@ export default async function uid(req, res) {
   }
   const client = await clientPromise;
 
-  const db = client.db();
-  const vocab = await db.collection("vocab").find({ uid }).toArray();
+  console.log(req.headers);
+  console.log(uid, 'uid')
 
-  res.status(200).send({ vocab });
+  const db = client.db();
+  const vocab = await db.collection("vocab").findOne({ uid });
+
+  res.status(200).send(vocab);
 }
